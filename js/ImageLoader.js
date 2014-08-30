@@ -5,7 +5,7 @@ function upload(file){
     }
 
     var image = new Image();
-
+    image.crossOrigin = "anonymous";
     image.src = URL.createObjectURL(file);
 
     return image;
