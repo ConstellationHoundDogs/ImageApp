@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        canvas {
+            background-color: #000;
+            display: block;
+            position: absolute;
+            margin: auto;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+    </style>
+    <link rel="stylesheet" href="css/pageprint.css" type="text/css" media="print">
+</head>
+<body>
+<button onclick="imageProcessor.turnUpsideDownImage()">UpSideDown</button>
+<button onclick="imageProcessor.mirrorImage()">Mirror</button>
+<button onclick="imageProcessor.greyScale()">GreyScale</button>
+<button onclick="cropMode()">Crop</button>
+<p id="cropMode">Crop mode: off</p>
+<p>
+    <button onclick="printView()" id="print">PrintView</button>
+</p>
+
+<script src="js/ImageLoader.js"></script>
+<script src="js/ImageProcessor.js"></script>
+<script>
+    var canvas = document.createElement("canvas");
+    var imageProcessor = new ImageProcessor(canvas);
+
+    document.body.appendChild(canvas);
+
+    var initialImage = new Image();
+    initialImage.onload = function(){
+        imageProcessor.setImage(initialImage);
+        imageProcessor.updateCanvas();
+    };
+    initialImage.src = "img/WelcomeMessage.png";
+
+    window.ondrop = function(e){
+        e.preventDefault();
+        var img = upload(e.dataTransfer.files[0]);
+        img.onload = function(){
+            imageProcessor.setImage(img);
+            imageProcessor.updateCanvas();
+        };
+    };
+
+    window.ondragover = function(e) {
+        e.preventDefault();
+    };
+
+
+
+    var x, y, w, h;
+    var mouseDown = false;
+
+    function getMousePos(e){
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+    }
+
+    function cropMode(){
+        turnCanvasMouseCallbacksOn();
+        document.getElementById("cropMode").innerHTML = "Crop mode: on";
+    }
+
+    function turnCanvasMouseCallbacksOn(){
+        canvas.onmousedown = function(e){
+            e.preventDefault();
+            mouseDown = true;
+            x = getMousePos(e).x;
+            y = getMousePos(e).y;
+        };
+
+        canvas.onmouseup = function(e){
+            if(mouseDown){
+                e.preventDefault();
+                w = getMousePos(e).x;
+                h = getMousePos(e).y;
+
+                imageProcessor.crop(x, y, w, h);
+                mouseDown = false;
+                document.getElementById("cropMode").innerHTML = "Crop mode: off";
+                turnCanvasMouseCallbacksOff();
+            }
+        };
+
+    }
+
+    function turnCanvasMouseCallbacksOff(){
+        canvas.onmousedown = null;
+        canvas.onmouseup = null;
+    }
+
+
+    function printView(){
+        window.print();
+    }
+</script>
+
+</body>
+</html>

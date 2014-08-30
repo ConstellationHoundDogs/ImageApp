@@ -1,0 +1,8 @@
+button, p{
+    display: none;
+}
+
+canvas {
+    display: block;
+    position: relative;
+}
