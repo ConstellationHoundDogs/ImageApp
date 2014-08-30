@@ -4,9 +4,9 @@ function upload(file){
         return false;
     }
 
-    this.image = new Image();
-
-    this.image.src = URL.createObjectURL(file);
+    var image = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = URL.createObjectURL(file);
 
     return this.image;
 }

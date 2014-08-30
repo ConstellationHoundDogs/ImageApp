@@ -20,7 +20,7 @@ p.setImage = function(img){
     this.canvas.width = img.width * ratio;
     this.canvas.height = img.height * ratio;
     this.img = img;
-    this.img.crossOrigin = "anonymous";
+
 };
 
 
